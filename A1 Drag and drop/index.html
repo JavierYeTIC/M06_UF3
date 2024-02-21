@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+
+    <div class="drop-area" draggable="true">
+        <h2>Drag & Drop files</h2>
+        <button id="button">Upload files</button>
+        <form action="db.php" method="post" enctype="multipart/form-data" id="form">
+        <input type="file" class="input-file" id="input-file" multiple style="display: none;" />
+        
+            
+        </form>
+    </div>
+
+    <div id="preview"></div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validació del Registre</title>
+    <style>
+        .errora {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <form name="myForm" action="/action_page.php" onsubmit="return validateForm()" method="post">
+        <label for="username">Nom d'usuari:</label>
+        <input type="text" id="username" name="username" onfocusout="validateUsername()"><br>
+        <span id="usernameError" class="errora"></span>
+
+        <br>
+
+        <label for="email">Correu electrònic:</label>
+        <input type="text" id="email" name="email" onfocusout="validateEmail()"><br>
+        <span id="emailError" class="errora"></span>
+
+        <br>
+
+        <label for="password">Contrasenya:</label>
+        <input type="password" id="password" name="password" oninput="validatePassword()"><br>
+        <span id="passwordError" class="errora"></span>
+        <span id="passwordValid" class="success"></span>
+        <br>
+
+        <label for="confirmPassword">Confirmar contrasenya:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" onfocusout="validateConfirmPassword()"><br>
+        <span id="confirmPasswordError" class="errora"></span>
+
+        <br>
+
+        <label for="postalAddress">Adreça postal:</label>
+        <input type="text" id="postalAddress" name="postalAddress" onfocusout="validatePostalAddress()"><br>
+        <span id="postalAddressError" class="errora"></span>
+
+        <br>
+
+        <input type="submit" value="Registrar">
+    </form>
+
+    <script src = "script.js"> </script>
+</body>
+</html>

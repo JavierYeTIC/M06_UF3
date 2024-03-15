@@ -1,5 +1,5 @@
 <?php
-// Connexió a la base de dades (assegura't de configurar les teves credencials)
+// Conexión a la base de datos (asegúrate de configurar tus credenciales)
 define("DB_HOST", "localhost");
 define("DB_NAME", "m06_uf3");
 define("DB_USER", "root");
@@ -8,31 +8,60 @@ define("DB_PORT", 3306);
 
 $conn = mysqli_connect(DB_HOST, DB_USER, DB_PSW, DB_NAME, DB_PORT);
 
-if ($conn->connect_error) {
-    die("Connexió fallida: " . $conn->connect_error);
+if (!$conn) {
+    die("Conexión fallida: " . mysqli_connect_error());
 }
-echo("hola")
-// Obté la categoria seleccionada (enviada pel fetch)
-$cat = $_POST['cat'];
 
-// Consulta les subcategories associades a la categoria seleccionada
-$sql = "SELECT id_subcat, nom_subcat FROM subcategories WHERE id_cat = $cat";
-$result = $conn->query($sql);
+// Verificar si el valor de $_POST['categoria'] está presente y es un número entero
+$cat = isset($_POST['categoria']) ? intval($_POST['categoria']) : 0;
 
-// Construeix un array d'objectes per a la resposta JSON
-$return = array();
+// Consulta preparada para evitar inyección SQL
+$query = "SELECT * FROM `subcategories` WHERE id_cat = ?";
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $object = new stdClass();
-        $object->nom = $row["nom_subcat"];
-        $object->id = $row["id_subcat"];
-        $return[] = $object;
+// Preparar la consulta
+$stmt = $conn->prepare($query);
+
+if ($stmt) {
+    // Vincular el parámetro
+    $stmt->bind_param("i", $cat);
+
+    // Ejecutar la consulta
+    $stmt->execute();
+
+    // Obtener los resultados
+    $result = $stmt->get_result();
+
+    // Procesar los resultados
+    $return = array();  // Inicializar el array
+    while ($row = mysqli_fetch_assoc($result)) {
+        // Crear un array asociativo para cada fila
+        $subcat = array(
+            'nom' => $row["nom_subcat"],
+            'id' => $row["id_subcat"]
+        );
+
+        // Agregar el array al array $return
+        $return[] = $subcat;
     }
+
+    // Codificar el array $return como JSON
+    $jsonEncoded = json_encode($return);
+    if ($jsonEncoded === false) {
+        // Manejo del error de codificación JSON
+        $jsonEncoded = json_encode(['error' => 'Error en la codificación JSON']);
+    }
+
+    // Imprimir la respuesta JSON
+    echo $jsonEncoded;
+
+    // Cerrar la consulta preparada
+    $stmt->close();
+
+    // Cerrar la conexión
+    mysqli_close($conn);
+
+} else {
+    // Manejar el caso en que la preparación de la consulta falló
+    echo "Error en la preparación de la consulta de subcategorías: " . $conn->error;
 }
-
-// Retorna el JSON
-echo json_encode($return);
-
-$conn->close();
 ?>

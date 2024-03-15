@@ -1,25 +1,33 @@
 function getSubCategories() {
-    // Obtenir el valor seleccionat de la categoria
+    // Obtener el valor seleccionado de la categoría
     let selectedCategoria = document.getElementById("categoria").value;
 
-    // Configuració de l'opció Fetch
+    // Configuración de la opción Fetch
     let formData = new FormData();
-    formData.append("cat", selectedCategoria);
+    formData.append('categoria', selectedCategoria);
 
     let options = {
         method: 'POST',
         body: formData
     };
 
-    // Fetch per obtenir les subcategories
+    // Fetch para obtener las subcategorías
     fetch("getSubCats.php", options)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Error en la solicitud AJAX: " + response.status);
+            }
+            return response.json();
+        })
         .then(data => {
-            // Esborra les opcions anteriors del selector de subcategories
             let subcatSelect = document.getElementById("subcategoria");
             subcatSelect.innerHTML = '';
 
-            // Afegeix les noves opcions del JSON obtingut
+            if (data.error) {
+                console.error(data.error);
+                return;
+            }
+
             data.forEach(el => {
                 var opt = document.createElement('option');
                 opt.value = el.id;
@@ -27,5 +35,5 @@ function getSubCategories() {
                 subcatSelect.appendChild(opt);
             });
         })
-        .catch(error => console.log(error));
+        .catch(error => console.error(error));
 }
